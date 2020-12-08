@@ -1,0 +1,16 @@
+# database
+*.db
+
+# Byte-compiled
+__pycache__/
+
+# linter
+*.vscode
+
+# Environments
+.env
+.venv
+env/
+
+#celery
+celerybeat-schedule
