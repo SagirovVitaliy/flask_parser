@@ -65,7 +65,7 @@ def create_app(config='config.py'):
         return render_template('add.html', form=form)
 
     @app.route('/stat/<int:announcement_id>/<date1>/<date2>', methods=['GET', 'POST'])
-    def stat(announcement_id, date1, date2):
+    def stat(announcement_id: int, date1: str, date2: str):
 
         exists_quantity_announcement = QuantityAnnouncement.query.filter(
             QuantityAnnouncement.announcement == announcement_id
@@ -77,37 +77,42 @@ def create_app(config='config.py'):
                 QuantityAnnouncement.time.between(date1, date2)
                 ).all()
         else:
-            announcement = Announcement.query.filter(Announcement.id == announcement_id).one()
-            region = announcement.region
-            search_phrase = announcement.search_phrase
+            try:
+                announcement = Announcement.query.filter(Announcement.id == announcement_id).one()
+                region = announcement.region
+                search_phrase = announcement.search_phrase
 
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
-            }
-            result = requests.get(
-                'https://www.avito.ru/' + region +
-                '?q=' + search_phrase,
-                headers=headers
-                )
-            result.raise_for_status()
-            html = BS(result.content, 'lxml')
-            content = html.select('.page-title-count-1oJOc')
-            quantity_announcement = content[0].text
+                headers = {
+                    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
+                }
+                result = requests.get(
+                    'https://www.avito.ru/' + region +
+                    '?q=' + search_phrase,
+                    headers=headers
+                    )
+                result.raise_for_status()
+                html = BS(result.content, 'lxml')
+                content = html.select('.page-title-count-1oJOc')
+                quantity_announcement = content[0].text
 
-            quantity_announcement = QuantityAnnouncement(
-                quantity_announcement=quantity_announcement,
-                announcement=announcement_id,
-                time=datetime.now()
-                )
-            db.session.add(quantity_announcement)
-            db.session.commit()
+                quantity_announcement = QuantityAnnouncement(
+                    quantity_announcement=quantity_announcement,
+                    announcement=announcement_id,
+                    time=datetime.now()
+                    )
+                db.session.add(quantity_announcement)
+                db.session.commit()
 
-            quantity_announcement = QuantityAnnouncement.query.filter(
-                QuantityAnnouncement.announcement == announcement_id,
-                QuantityAnnouncement.time.between(date.today(), date.today() + timedelta(days=1))
-                ).all()
+                quantity_announcement = QuantityAnnouncement.query.filter(
+                    QuantityAnnouncement.announcement == announcement_id,
+                    QuantityAnnouncement.time.between(date.today(), date.today() + timedelta(days=1))
+                    ).all()
 
-            flash('Ваш запрос зарегистрирован и теперь будет собирать информацию каждый час!')
+                flash('Ваш запрос зарегистрирован и теперь будет собирать информацию каждый час!')
+            
+            except:
+                flash('Такого обявления не существует!!(хватит баловаться с URL)')
+                return render_template('stat.html')
 
         return render_template('stat.html', quantity_announcement=quantity_announcement)
 

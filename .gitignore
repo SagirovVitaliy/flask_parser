@@ -14,3 +14,7 @@ env/
 
 #celery
 celerybeat-schedule
+
+#pytest data
+.coverage
+.pytest_cache
