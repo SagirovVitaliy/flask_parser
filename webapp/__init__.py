@@ -97,8 +97,9 @@ def create_app(config='config.py'):
         дневной интервал (date1, date2) и выводит количетсво
         объявлений (quantity_announcement) с их времеными метками (time)
         за заднный интервал.
-        Если для сущности Announcement ещё нет, функция парсит на данный момент 
-        
+        Если для сущности Announcement ещё нет данных в QuantityAnnouncement,
+        то функция парсит и выдаёт данные на текущий момент времени, и
+        записывает их в базу данных.
 
         QuantityAnnouncement - сущность хранящая атрибуты quantity_announcement,
         time, announcement (models.py).

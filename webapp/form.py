@@ -5,9 +5,8 @@ from wtforms.validators import DataRequired
 
 class SearchForm(FlaskForm):
     '''
-    Это создание формы имеющая следующие поля 
-
-    
+    SearchForm класс для создания формы на
+    основе Flask-WTF
     '''
     search_prhase = StringField('Объявление', validators=[DataRequired()])
     region = StringField('Регион', validators=[DataRequired()])

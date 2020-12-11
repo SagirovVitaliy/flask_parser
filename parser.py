@@ -12,13 +12,12 @@ with app.app_context():
     def avito_parser():
         '''
         Это функция которая занимается парсингом сайта для всех сущностей
-        Announcement 
+        Announcement и создаёт на их основе сущность QuantityAnnouncement.
 
         Announcement - сущность хранящая атрибуты search_phrase, region (models.py).
-        
+
         QuantityAnnouncement - сущность хранящая атрибуты quantity_announcement,
         time, announcement (models.py).
-
         '''
         announcements = Announcement.query.all()
 
