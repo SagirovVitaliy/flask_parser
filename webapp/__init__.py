@@ -17,6 +17,32 @@ def create_app(config='config.py'):
 
     @app.route('/add', methods=['GET', 'POST'])
     def add():
+        '''
+        Функция add принимает название обявления (search_phrase) и
+        регион (region), добавляет в базу данных, где им
+        присваивается id.
+
+        В качестве дополнительных данных принимается дневной
+        интревал из двух дат (date1, date2).
+        Если вводится не существующий регион или название объявления,
+        выводится оповещение о некоректности введённых данных.
+        Данные попадаю в функцию из формы со страницы. (form.py)
+
+        search_phrase - переменная хранящая название объявления.
+
+        region - переменная хранящая название города.
+
+        Announcement - сущность хранящая атрибуты search_phrase, region (models.py).
+
+        date1, date2 - переменные хранящие интревал.
+
+        announcement_exists - переменная хранящая количество сущностей
+        Announcement с заданными атрибутами (search_phrase, region).
+
+        announcement - переменная хранящая сущность Announcement.
+
+        announcement_id - переменная хранящая атрибут id сущности Announcement.
+        '''
         form = SearchForm()
 
         if request.method == 'POST':
@@ -54,7 +80,7 @@ def create_app(config='config.py'):
                     return redirect(url_for('stat', announcement_id=announcement_id, date1=date1, date2=date2))
                 else:
                     announcement = Announcement(
-                        search_phrase=search_phrase, 
+                        search_phrase=search_phrase,
                         region=region
                         )
                     db.session.add(announcement)
@@ -66,6 +92,23 @@ def create_app(config='config.py'):
 
     @app.route('/stat/<int:announcement_id>/<date1>/<date2>', methods=['GET', 'POST'])
     def stat(announcement_id: int, date1: str, date2: str):
+        '''
+        Функция stat принимает id сущности Announcement (announcement_id),
+        дневной интервал (date1, date2) и выводит количетсво
+        объявлений (quantity_announcement) с их времеными метками (time)
+        за заднный интервал.
+        Если для сущности Announcement ещё нет, функция парсит на данный момент 
+        
+
+        QuantityAnnouncement - сущность хранящая атрибуты quantity_announcement,
+        time, announcement (models.py).
+
+        exists_quantity_announcement - переменная хранящая количество сущностей
+        QuantityAnnouncement с заданными атрибутами (quantity_announcement, time,
+        announcement).
+
+        quantity_announcement - переменная хранящая сущность QuantityAnnouncement.
+        '''
 
         exists_quantity_announcement = QuantityAnnouncement.query.filter(
             QuantityAnnouncement.announcement == announcement_id

@@ -1,0 +1,21 @@
+version: "3.9"
+
+services: 
+  web:
+    build: .
+
+    command: export FLASK_APP=webapp && export FLASK_ENV=development && flask run -h 0.0.0.0
+
+    volumes: 
+      - .:/flask_parser/webapp
+
+    ports: 
+      - "5000:5000"
+
+  celery:
+    build: .
+
+    command: celery -A tasks_parser worker -B --loglevel=INFO
+
+    volumes: 
+      - .:/flask_parser
