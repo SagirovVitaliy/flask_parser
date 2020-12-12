@@ -1,4 +1,5 @@
 from webapp import create_app
+
 from webapp.db import db
 from webapp.models import Announcement, QuantityAnnouncement
 

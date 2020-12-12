@@ -4,10 +4,10 @@ services:
   web:
     build: .
 
-    command: export FLASK_APP=webapp && export FLASK_ENV=development && flask run -h 0.0.0.0
+    command: ./run.sh
 
     volumes: 
-      - .:/flask_parser/webapp
+      - .:/flask_parser
 
     ports: 
       - "5000:5000"
@@ -15,7 +15,19 @@ services:
   celery:
     build: .
 
+    ports:
+      - "5555:5555"
+
     command: celery -A tasks_parser worker -B --loglevel=INFO
 
     volumes: 
       - .:/flask_parser
+    
+    depends_on:
+      - redis
+    
+  redis:
+    image: redis
+    
+    ports:
+        - "6370:6379"

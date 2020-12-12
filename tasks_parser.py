@@ -6,7 +6,7 @@ from parser import avito_parser
 from celery.schedules import crontab
 
 flask_app = create_app()
-celery_app = Celery('tasks_parser', broker='redis://localhost:6379/0')
+celery_app = Celery('tasks_parser', broker='redis://redis:6379/0')
 
 
 @celery_app.task

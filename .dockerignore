@@ -15,6 +15,3 @@ celerybeat-schedule
 #pytest data
 .coverage
 .pytest_cache
-
-#run server
-*.sh
