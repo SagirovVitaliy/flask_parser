@@ -73,3 +73,23 @@ def test_stat_page_with_fixture_bad_announcement_id(test_client):
     response = test_client.get('stat/550/2020-12-07/2020-12-09')
     assert response.status_code == 200
 
+
+def test_stat_page_with_fixture_post(test_client):
+    '''
+    GIVEN a Flask application configured for testing
+    WHEN the '/stat/<int:announcement_id>/<date1>/<date2>' page is requested (GET)
+    THEN check that the response is valid
+    '''
+    response = test_client.post('stat/1/2020-12-07/2020-12-09')
+    assert response.status_code == 200
+
+
+def test_top_five_page_with_fixture(test_client):
+    '''
+    GIVEN a Flask application configured for testing
+    WHEN the '/top_five/<int:announcement_id>' page is requested (GET)
+    THEN check that the response is valid
+    '''
+    response = test_client.get('/top_five/1')
+    assert response.status_code == 200
+

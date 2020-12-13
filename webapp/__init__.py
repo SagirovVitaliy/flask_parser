@@ -91,7 +91,7 @@ def create_app(config='config.py'):
         return render_template('add.html', form=form)
 
     @app.route('/stat/<int:announcement_id>/<date1>/<date2>', methods=['GET', 'POST'])
-    def stat(announcement_id: int, date1: str, date2: str):
+    def stat(announcement_id, date1, date2):
         '''
         Функция stat принимает id сущности Announcement (announcement_id),
         дневной интервал (date1, date2) и выводит количетсво
@@ -158,6 +158,41 @@ def create_app(config='config.py'):
                 flash('Такого обявления не существует!!(хватит баловаться с URL)')
                 return render_template('stat.html')
 
-        return render_template('stat.html', quantity_announcement=quantity_announcement)
+        return render_template('stat.html', quantity_announcement=quantity_announcement, announcement_id=announcement_id)
+
+    @app.route('/top_five/<int:announcement_id>', methods=['GET', 'POST'])
+    def top_five(announcement_id):
+        '''
+        Функция top_five принимает id сущности Announcement (announcement_id)
+        и парсит по данным из этой сущности и выводит Топ 5 объявлений
+        '''
+        announcement = Announcement.query.filter(Announcement.id == announcement_id).one()
+        region = announcement.region
+        search_phrase = announcement.search_phrase
+
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
+        }
+        result = requests.get(
+            'https://www.avito.ru/' + region +
+            '?q=' + search_phrase,
+            headers=headers
+            )
+        result.raise_for_status()
+        html = BS(result.text, 'lxml')
+        all_item = html.findAll('div', class_='iva-item-root-G3n7v')
+        top_five = []
+        n = 0
+        for i in all_item:
+            n += 1
+            if n > 5:
+                break
+            title = i.find('a', class_='link-link-39EVK').text
+            href = i.find('a', class_='link-link-39EVK')['href']
+            top_five.append({
+                'title': title,
+                'href': 'https://www.avito.ru' + href
+            })
+        return render_template('top_five.html', top_five=top_five)
 
     return app

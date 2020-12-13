@@ -25,19 +25,9 @@
             {% endif %}
           {% endwith %}
 
-          {% for quantity in quantity_announcement %}
-              Количество объявлений {{ quantity.quantity_announcement }} | Время {{ quantity.time.strftime('%H:%M %Y-%m-%d') }}<br>
+          {% for announcement in top_five %}
+              <a href="{{ announcement.href }}">{{ announcement.title }}</a><br>
           {% endfor %}
-        </div>
-
-        <div class="col-4">
-          {% if announcement_id%}
-          <br>
-          <p>Посмотреть топ 5 объявлени в данный момент</p>
-          <form action="{{url_for('top_five', announcement_id=announcement_id)}}" method="POST">
-            <button type="submit">Топ 5</button>
-          </form>
-          {% endif %}
         </div>
       </div>
     </div>
