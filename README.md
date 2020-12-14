@@ -32,6 +32,9 @@ http://localhost:5000
 Для запуска Celery запустите команду (нужно открыть ещё один терминал):\
 `celery -A tasks_parser worker -B --loglevel=INFO`
 
+Так как вы запускаете Celery вне Docker не забудьте поменять в tasks_parser.py:\
+`broker='redis://redis:6379/0'` на `broker='redis://localhost:6379/0'`
+
 Запуск тестового сервера с помощью Docker
 ------------------------
 Для запуска тестовго сервера запустите команду:\
